@@ -1,6 +1,4 @@
-class ApiProvider {
-
-  String fetchPodCast = """
+const String readPodCast = r'''
   query {
     podcast {
       artistId,
@@ -14,6 +12,4 @@ class ApiProvider {
       kind
     }
   }
-  """;
-
-}
+  ''';
