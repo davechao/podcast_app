@@ -45,36 +45,45 @@ class _HomeState extends State<HomePage> {
                 childAspectRatio: 0.7,
               ),
               itemBuilder: (context, index) {
-                return Card(
-                  color: Colors.black,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      CachedNetworkImage(
-                        imageUrl: podCasts[index].artworkUrl100,
-                        placeholder: (context, url) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return Icon(Icons.error);
-                        },
-                      ),
-                      SizedBox(height: 4.0),
-                      Text(
-                        podCasts[index].artistName,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        podCasts[index].name,
-                        style: TextStyle(
-                          color: Colors.white60,
-                          fontSize: 12.0,
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: 2.0,
+                    right: 2.0,
+                  ),
+                  child: Card(
+                    color: Colors.black,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        CachedNetworkImage(
+                          imageUrl: podCasts[index].artworkUrl100,
+                          placeholder: (context, url) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return Icon(Icons.error);
+                          },
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 8.0),
+                        Text(
+                          podCasts[index].artistName,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          podCasts[index].name,
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
