@@ -4,7 +4,7 @@ abstract class PodCastEvent extends Equatable {
   const PodCastEvent();
 }
 
-class FetchPodCast extends PodCastEvent {
+class FetchPodCasts extends PodCastEvent {
   @override
   List<Object> get props => [];
 }

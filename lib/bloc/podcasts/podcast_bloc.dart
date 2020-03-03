@@ -1,8 +1,8 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podcastapp/bloc/podcast_event.dart';
-import 'package:podcastapp/bloc/podcast_state.dart';
+import 'package:podcastapp/bloc/podcasts/podcast_event.dart';
+import 'package:podcastapp/bloc/podcasts/podcast_state.dart';
 import 'package:podcastapp/model/repository/podcast_repository.dart';
 import 'package:podcastapp/model/vo/podcast_list_item.dart';
 
@@ -18,7 +18,7 @@ class PodCastBloc extends Bloc<PodCastEvent, PodCastState> {
 
   @override
   Stream<PodCastState> mapEventToState(PodCastEvent event) async* {
-    if (event is FetchPodCast) {
+    if (event is FetchPodCasts) {
       try {
         final result = await repository.getPodCastRepositories();
         if (result.hasException) {
@@ -31,7 +31,6 @@ class PodCastBloc extends Bloc<PodCastEvent, PodCastState> {
 
         final podCasts = PodCastListItem.fromJson(result.data);
         yield Success(podCasts);
-
       } catch (error) {
         Fimber.e("Error: $error");
         yield Error(error);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:podcastapp/bloc/podcast_bloc.dart';
+import 'package:podcastapp/bloc/podcasts/podcast_bloc.dart';
 import 'package:podcastapp/constant.dart';
 import 'package:podcastapp/model/repository/podcast_repository.dart';
-import 'package:podcastapp/page/home/home_page.dart';
+import 'package:podcastapp/page/podcasts/podcasts_page.dart';
 
 class App extends StatelessWidget {
   GraphQLClient _initGraphQLClient() {
@@ -31,7 +31,7 @@ class App extends StatelessWidget {
             client: _initGraphQLClient(),
           ),
         ),
-        child: HomePage(),
+        child: PodCastsPage(),
       ),
     );
   }
