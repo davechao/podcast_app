@@ -1,15 +1,10 @@
-const String readPodCast = r'''
+const String readPodCast = '''
   query {
     podcast {
-      artistId,
-      artistUrl,
-      genre {
-        genreId,
-        name,
-        url
-      },
       id,
-      kind
+      artistName,
+      name,
+      artworkUrl100
     }
   }
   ''';

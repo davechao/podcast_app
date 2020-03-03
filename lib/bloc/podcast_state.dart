@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:podcastapp/model/vo/podcast_list_item.dart';
 
 class PodCastState extends Equatable {
   const PodCastState();
@@ -22,10 +22,10 @@ class Error extends PodCastState {
 }
 
 class Success extends PodCastState {
-  final String podCastListItem;
+  final PodCastListItem podCasts;
 
-  Success({this.podCastListItem}) : assert(podCastListItem != null);
+  Success([this.podCasts]) : assert(podCasts != null);
 
   @override
-  List<Object> get props => [podCastListItem];
+  List<Object> get props => [podCasts];
 }

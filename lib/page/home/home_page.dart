@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podcastapp/bloc/podcast_bloc.dart';
 import 'package:podcastapp/bloc/podcast_event.dart';
 import 'package:podcastapp/bloc/podcast_state.dart';
+import 'package:podcastapp/model/vo/podcast_item.dart';
+import 'package:podcastapp/model/vo/podcast_list_item.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -30,8 +33,37 @@ class _HomeState extends State<HomePage> {
       body: BlocBuilder<PodCastBloc, PodCastState>(
         builder: (context, state) {
           if (state is Success) {
-            return Center(
-              child: Text('Success'),
+            PodCastListItem podCastListItem = state.podCasts;
+            List<PodCastItem> podCasts = podCastListItem.podCasts;
+
+            return GridView.builder(
+              itemCount: podCasts.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+              ),
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      CachedNetworkImage(
+                        imageUrl: podCasts[index].artworkUrl100,
+                        placeholder: (context, url) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          return Icon(Icons.error);
+                        },
+                      ),
+                      Text(podCasts[index].artistName),
+                      Text(podCasts[index].name),
+                    ],
+                  ),
+                );
+              },
             );
           } else {
             return Center(

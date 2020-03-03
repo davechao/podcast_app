@@ -24,17 +24,20 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
-  # bloc
+  # Bloc
   bloc: ^3.0.0
 
-  # flutter bloc
+  # Flutter Bloc
   flutter_bloc: ^3.2.0
 
-  # graphql
+  # Graphql
   graphql_flutter: ^3.0.0
 
   # Dio
   dio: ^3.0.9
+
+  # Cached Network Image
+  cached_network_image: ^2.0.0
 
   # JSON Annotation
   json_annotation: ^3.0.1
