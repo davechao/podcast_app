@@ -27,7 +27,9 @@ class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text('Casts'),
       ),
       body: BlocBuilder<PodCastBloc, PodCastState>(
@@ -44,6 +46,7 @@ class _HomeState extends State<HomePage> {
               ),
               itemBuilder: (context, index) {
                 return Card(
+                  color: Colors.black,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -58,8 +61,19 @@ class _HomeState extends State<HomePage> {
                           return Icon(Icons.error);
                         },
                       ),
-                      Text(podCasts[index].artistName),
-                      Text(podCasts[index].name),
+                      SizedBox(height: 4.0),
+                      Text(
+                        podCasts[index].artistName,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(height: 8.0),
+                      Text(
+                        podCasts[index].name,
+                        style: TextStyle(
+                          color: Colors.white60,
+                          fontSize: 12.0,
+                        ),
+                      ),
                     ],
                   ),
                 );
