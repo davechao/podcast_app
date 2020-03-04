@@ -20,7 +20,7 @@ class PodCastBloc extends Bloc<PodCastEvent, PodCastState> {
   Stream<PodCastState> mapEventToState(PodCastEvent event) async* {
     if (event is FetchPodCasts) {
       try {
-        final result = await repository.getPodCastRepositories();
+        final result = await repository.getPodCasts();
         if (result.hasException) {
           yield Error(result.exception.toString());
           return;

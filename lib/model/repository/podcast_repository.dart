@@ -7,9 +7,19 @@ class PodCastRepository {
 
   PodCastRepository({@required this.client}) : assert(client != null);
 
-  Future<QueryResult> getPodCastRepositories() async {
+  Future<QueryResult> getPodCasts() async {
     final QueryOptions _options = QueryOptions(
-      documentNode: gql(queries.readPodCast),
+      documentNode: gql(queries.readPodCasts),
+    );
+    return await client.query(_options);
+  }
+
+  Future<QueryResult> getPodCastDetail(int collectionId) async {
+    final QueryOptions _options = QueryOptions(
+      documentNode: gql(queries.readPodCastDetail),
+      variables: <String, dynamic>{
+        'collectionId': collectionId,
+      },
     );
     return await client.query(_options);
   }
