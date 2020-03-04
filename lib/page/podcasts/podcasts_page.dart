@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:podcastapp/bloc/detail/detail_bloc.dart';
 import 'package:podcastapp/bloc/podcasts/podcast_bloc.dart';
 import 'package:podcastapp/bloc/podcasts/podcast_event.dart';
 import 'package:podcastapp/bloc/podcasts/podcast_state.dart';
-import 'package:podcastapp/model/vo/podcast_item.dart';
-import 'package:podcastapp/model/vo/podcast_list_item.dart';
+import 'package:podcastapp/model/config.dart';
+import 'package:podcastapp/model/config_provider.dart';
+import 'package:podcastapp/model/repository/podcast_repository.dart';
+import 'package:podcastapp/model/repository/vo/podcast_item.dart';
+import 'package:podcastapp/model/repository/vo/podcast_list_item.dart';
 import 'package:podcastapp/page/detail/detail_page.dart';
 
 class PodCastsPage extends StatefulWidget {
@@ -65,6 +69,8 @@ class _PodCastsState extends State<PodCastsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Config _config = ConfigProvider.of(context).config;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -91,7 +97,14 @@ class _PodCastsState extends State<PodCastsPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailPage(),
+                          builder: (context) => BlocProvider(
+                            create: (context) => DetailBloc(
+                              repository: PodCastRepository(
+                                client: _config.graphQLClient,
+                              ),
+                            ),
+                            child: DetailPage(podCasts[index].id),
+                          ),
                         ),
                       );
                     },

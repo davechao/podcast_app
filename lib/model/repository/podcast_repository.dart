@@ -14,7 +14,7 @@ class PodCastRepository {
     return await client.query(_options);
   }
 
-  Future<QueryResult> getPodCastDetail(int collectionId) async {
+  Future<QueryResult> getPodCastDetail(String collectionId) async {
     final QueryOptions _options = QueryOptions(
       documentNode: gql(queries.readPodCastDetail),
       variables: <String, dynamic>{

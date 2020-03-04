@@ -1,26 +1,25 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podcastapp/bloc/podcasts/podcast_event.dart';
-import 'package:podcastapp/bloc/podcasts/podcast_state.dart';
+import 'package:podcastapp/bloc/detail/detail_event.dart';
+import 'package:podcastapp/bloc/detail/detail_state.dart';
 import 'package:podcastapp/model/repository/podcast_repository.dart';
-import 'package:podcastapp/model/repository/vo/podcast_list_item.dart';
 
-class PodCastBloc extends Bloc<PodCastEvent, PodCastState> {
+class DetailBloc extends Bloc<DetailEvent, DetailState> {
   final PodCastRepository repository;
 
-  PodCastBloc({
+  DetailBloc({
     @required this.repository,
   });
 
   @override
-  PodCastState get initialState => Loading();
+  DetailState get initialState => Loading();
 
   @override
-  Stream<PodCastState> mapEventToState(PodCastEvent event) async* {
-    if (event is FetchPodCasts) {
+  Stream<DetailState> mapEventToState(DetailEvent event) async* {
+    if (event is FetchPodCastDetail) {
       try {
-        final result = await repository.getPodCasts();
+        final result = await repository.getPodCastDetail(event.collectionId);
         if (result.hasException) {
           yield Error(result.exception.toString());
           return;
@@ -29,8 +28,10 @@ class PodCastBloc extends Bloc<PodCastEvent, PodCastState> {
           yield Loading();
         }
 
-        final podCasts = PodCastListItem.fromJson(result.data);
-        yield Success(podCasts);
+        Fimber.d("@@Data: ${result.data}");
+//        final podCasts = PodCastListItem.fromJson(result.data);
+//        yield Success(podCasts);
+
       } catch (error) {
         Fimber.e("Error: $error");
         yield Error(error);

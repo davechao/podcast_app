@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:podcastapp/model/vo/podcast_item.dart';
+import 'package:podcastapp/model/repository/vo/podcast_item.dart';
 
 part 'podcast_list_item.g.dart';
 

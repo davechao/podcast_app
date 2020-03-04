@@ -1,18 +1,17 @@
 import 'package:equatable/equatable.dart';
-import 'package:podcastapp/model/repository/vo/podcast_list_item.dart';
 
-class PodCastState extends Equatable {
-  const PodCastState();
+class DetailState extends Equatable {
+  const DetailState();
 
   @override
   List<Object> get props => [];
 }
 
-class Loading extends PodCastState {}
+class Loading extends DetailState {}
 
-class DataEmpty extends PodCastState {}
+class DataEmpty extends DetailState {}
 
-class Error extends PodCastState {
+class Error extends DetailState {
   final String exception;
 
   Error([this.exception]) : assert(exception != null);
@@ -21,8 +20,8 @@ class Error extends PodCastState {
   List<Object> get props => [exception];
 }
 
-class Success extends PodCastState {
-  final PodCastListItem podCasts;
+class Success extends DetailState {
+  final String podCasts;
 
   Success([this.podCasts]) : assert(podCasts != null);
 
