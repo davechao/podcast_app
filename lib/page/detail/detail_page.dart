@@ -30,18 +30,30 @@ class _DetailState extends State<DetailPage> {
   }
 
   Widget _buildContentFeed(List<ContentFeedItem> items) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(
-            '${items[index].title}',
-            style: TextStyle(color: Colors.white),
-          ),
-        );
-      },
+    return Expanded(
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(
+              '${items[index].title}',
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return ListTile(
+      title: Text(
+        'ALL EPISODES',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12.0,
+        ),
+      ),
     );
   }
 
@@ -111,12 +123,7 @@ class _DetailState extends State<DetailPage> {
                 children: <Widget>[
                   _buildCastDetail(collectionItem),
                   SizedBox(height: 16.0),
-                  ListTile(
-                    title: Text(
-                      'ALL EPISODES',
-                      style: TextStyle(color: Colors.white, fontSize: 12.0),
-                    ),
-                  ),
+                  _buildTitle(),
                   _buildContentFeed(collectionItem.contentFeeds)
                 ],
               );
