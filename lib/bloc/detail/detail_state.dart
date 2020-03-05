@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:podcastapp/model/repository/vo/podcast_detail_item.dart';
 
 class DetailState extends Equatable {
   const DetailState();
@@ -21,10 +22,10 @@ class Error extends DetailState {
 }
 
 class Success extends DetailState {
-  final String podCasts;
+  final PodCastDetailItem podCastDetailItem;
 
-  Success([this.podCasts]) : assert(podCasts != null);
+  Success([this.podCastDetailItem]) : assert(podCastDetailItem != null);
 
   @override
-  List<Object> get props => [podCasts];
+  List<Object> get props => [podCastDetailItem];
 }

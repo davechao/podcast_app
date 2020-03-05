@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podcastapp/bloc/detail/detail_event.dart';
 import 'package:podcastapp/bloc/detail/detail_state.dart';
 import 'package:podcastapp/model/repository/podcast_repository.dart';
+import 'package:podcastapp/model/repository/vo/podcast_detail_item.dart';
 
 class DetailBloc extends Bloc<DetailEvent, DetailState> {
   final PodCastRepository repository;
@@ -28,9 +29,8 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
           yield Loading();
         }
 
-        Fimber.d("@@Data: ${result.data}");
-//        final podCasts = PodCastListItem.fromJson(result.data);
-//        yield Success(podCasts);
+        final podCastDetailItem = PodCastDetailItem.fromJson(result.data);
+        yield Success(podCastDetailItem);
 
       } catch (error) {
         Fimber.e("Error: $error");
