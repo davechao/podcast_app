@@ -29,7 +29,7 @@ class _PodCastsState extends State<PodCastsPage> {
     bloc.add(FetchPodCasts());
   }
 
-  Widget _buildCard(PodCastItem item) {
+  Widget _buildCastCard(PodCastItem item) {
     return Card(
       color: Colors.black,
       child: Column(
@@ -108,7 +108,7 @@ class _PodCastsState extends State<PodCastsPage> {
                         ),
                       );
                     },
-                    child: _buildCard(podCasts[index]),
+                    child: _buildCastCard(podCasts[index]),
                   ),
                 );
               },
