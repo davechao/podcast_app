@@ -91,7 +91,8 @@ class _DetailState extends State<DetailPage> {
 
   Widget _buildContentFeed(List<ContentFeedItem> items) {
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
+        separatorBuilder: (context, index) => Divider(color: Colors.white70),
         itemCount: items.length,
         itemBuilder: (context, index) {
           return ListTile(
@@ -116,8 +117,11 @@ class _DetailState extends State<DetailPage> {
       home: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
+          leading: IconButton(
+            icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: Colors.black,
-          title: Text('Detail'),
         ),
         body: BlocBuilder<DetailBloc, DetailState>(
           builder: (context, state) {
