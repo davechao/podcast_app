@@ -39,6 +39,9 @@ dependencies:
   # Cached Network Image
   cached_network_image: ^2.0.0
 
+  # Sound
+  flutter_sound: ^2.1.1
+
   # JSON Annotation
   json_annotation: ^3.0.1
 

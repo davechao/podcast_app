@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podcastapp/bloc/detail/detail_bloc.dart';
+import 'package:podcastapp/bloc/collections/collection_bloc.dart';
 import 'package:podcastapp/bloc/podcasts/podcast_bloc.dart';
 import 'package:podcastapp/bloc/podcasts/podcast_event.dart';
 import 'package:podcastapp/bloc/podcasts/podcast_state.dart';
@@ -10,7 +10,7 @@ import 'package:podcastapp/model/config_provider.dart';
 import 'package:podcastapp/model/repository/podcast_repository.dart';
 import 'package:podcastapp/model/repository/vo/podcast_item.dart';
 import 'package:podcastapp/model/repository/vo/podcast_list_item.dart';
-import 'package:podcastapp/page/detail/detail_page.dart';
+import 'package:podcastapp/page/collections/collections_page.dart';
 
 class PodCastsPage extends StatefulWidget {
   @override
@@ -98,12 +98,12 @@ class _PodCastsState extends State<PodCastsPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => BlocProvider(
-                            create: (context) => DetailBloc(
+                            create: (context) => CollectionBloc(
                               repository: PodCastRepository(
                                 client: _config.graphQLClient,
                               ),
                             ),
-                            child: DetailPage(podCasts[index].id),
+                            child: CollectionsPage(podCasts[index].id),
                           ),
                         ),
                       );

@@ -2,30 +2,31 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podcastapp/bloc/detail/detail_bloc.dart';
-import 'package:podcastapp/bloc/detail/detail_event.dart';
-import 'package:podcastapp/bloc/detail/detail_state.dart';
+import 'package:podcastapp/bloc/collections/collection_bloc.dart';
+import 'package:podcastapp/bloc/collections/collection_event.dart';
+import 'package:podcastapp/bloc/collections/collection_state.dart';
 import 'package:podcastapp/model/repository/vo/collection_item.dart';
 import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
+import 'package:podcastapp/page/player/player_page.dart';
 
-class DetailPage extends StatefulWidget {
+class CollectionsPage extends StatefulWidget {
   final String collectionId;
 
-  DetailPage(this.collectionId);
+  CollectionsPage(this.collectionId);
 
   @override
   State<StatefulWidget> createState() {
-    return _DetailState();
+    return _CollectionPageState();
   }
 }
 
-class _DetailState extends State<DetailPage> {
-  DetailBloc bloc;
+class _CollectionPageState extends State<CollectionsPage> {
+  CollectionBloc bloc;
 
   @override
   void initState() {
     super.initState();
-    bloc = BlocProvider.of<DetailBloc>(context);
+    bloc = BlocProvider.of<CollectionBloc>(context);
     bloc.add(FetchPodCastDetail(widget.collectionId));
   }
 
@@ -100,9 +101,19 @@ class _DetailState extends State<DetailPage> {
               '${items[index].title}',
               style: TextStyle(color: Colors.white),
             ),
-            trailing: Icon(
-              Icons.play_circle_outline,
-              color: Colors.amber,
+            trailing: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlayerPage(items[index]),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.play_circle_outline,
+                color: Colors.amber,
+              ),
             ),
           );
         },
@@ -122,8 +133,9 @@ class _DetailState extends State<DetailPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           backgroundColor: Colors.black,
+          title: Text('Collection'),
         ),
-        body: BlocBuilder<DetailBloc, DetailState>(
+        body: BlocBuilder<CollectionBloc, CollectionState>(
           builder: (context, state) {
             if (state is Success) {
               final collectionItem = state.podCastDetailItem.collectionItem;

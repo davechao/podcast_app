@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-abstract class DetailEvent extends Equatable {
-  const DetailEvent();
+abstract class CollectionEvent extends Equatable {
+  const CollectionEvent();
 }
 
-class FetchPodCastDetail extends DetailEvent {
+class FetchPodCastDetail extends CollectionEvent {
   final String collectionId;
 
   FetchPodCastDetail(this.collectionId);
