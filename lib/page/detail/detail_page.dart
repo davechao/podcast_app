@@ -29,34 +29,6 @@ class _DetailState extends State<DetailPage> {
     bloc.add(FetchPodCastDetail(widget.collectionId));
   }
 
-  Widget _buildContentFeed(List<ContentFeedItem> items) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(
-              '${items[index].title}',
-              style: TextStyle(color: Colors.white),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return ListTile(
-      title: Text(
-        'ALL EPISODES',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 12.0,
-        ),
-      ),
-    );
-  }
-
   Widget _buildCastDetail(CollectionItem item) {
     return Padding(
       padding: EdgeInsets.only(left: 8.0, right: 8.0),
@@ -101,6 +73,38 @@ class _DetailState extends State<DetailPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return ListTile(
+      title: Text(
+        'ALL EPISODES',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContentFeed(List<ContentFeedItem> items) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(
+              '${items[index].title}',
+              style: TextStyle(color: Colors.white),
+            ),
+            trailing: Icon(
+              Icons.play_circle_outline,
+              color: Colors.amber,
+            ),
+          );
+        },
       ),
     );
   }
