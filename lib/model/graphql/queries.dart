@@ -15,6 +15,7 @@ const String readPodCastDetail = r'''
   	  artistId,
   	  artistName,
   	  artworkUrl100,
+  	  artworkUrl600,
   	  collectionId,
   	  collectionName,
   	  country,

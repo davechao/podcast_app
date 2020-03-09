@@ -13,6 +13,7 @@ CollectionItem _$CollectionItemFromJson(Map<String, dynamic> json) {
     json['artistId'] as int,
     json['artistName'] as String,
     json['artworkUrl100'] as String,
+    json['artworkUrl600'] as String,
     (json['contentFeed'] as List)
         .map((e) => ContentFeedItem.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -26,5 +27,6 @@ Map<String, dynamic> _$CollectionItemToJson(CollectionItem instance) =>
       'artistId': instance.artistId,
       'artistName': instance.artistName,
       'artworkUrl100': instance.artworkUrl100,
+      'artworkUrl600': instance.artworkUrl600,
       'contentFeed': instance.contentFeeds,
     };

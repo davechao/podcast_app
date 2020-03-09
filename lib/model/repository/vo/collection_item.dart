@@ -20,6 +20,9 @@ class CollectionItem {
   @JsonKey(name: "artworkUrl100")
   final String artworkUrl100;
 
+  @JsonKey(name: "artworkUrl600")
+  final String artworkUrl600;
+
   @JsonKey(name: "contentFeed")
   List<ContentFeedItem> contentFeeds = new List<ContentFeedItem>();
 
@@ -29,6 +32,7 @@ class CollectionItem {
     this.artistId,
     this.artistName,
     this.artworkUrl100,
+    this.artworkUrl600,
     this.contentFeeds,
   );
 
@@ -37,5 +41,4 @@ class CollectionItem {
 
   Map<String, dynamic> toJson(CollectionItem instance) =>
       _$CollectionItemToJson(instance);
-
 }

@@ -6,7 +6,6 @@ import 'package:podcastapp/bloc/collections/collection_bloc.dart';
 import 'package:podcastapp/bloc/collections/collection_event.dart';
 import 'package:podcastapp/bloc/collections/collection_state.dart';
 import 'package:podcastapp/model/repository/vo/collection_item.dart';
-import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
 import 'package:podcastapp/page/player/player_page.dart';
 
 class CollectionsPage extends StatefulWidget {
@@ -90,15 +89,15 @@ class _CollectionPageState extends State<CollectionsPage> {
     );
   }
 
-  Widget _buildContentFeed(List<ContentFeedItem> items) {
+  Widget _buildContentFeed(CollectionItem item) {
     return Expanded(
       child: ListView.separated(
         separatorBuilder: (context, index) => Divider(color: Colors.white70),
-        itemCount: items.length,
+        itemCount: item.contentFeeds.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(
-              '${items[index].title}',
+              '${item.contentFeeds[index].title}',
               style: TextStyle(color: Colors.white),
             ),
             trailing: GestureDetector(
@@ -106,7 +105,10 @@ class _CollectionPageState extends State<CollectionsPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PlayerPage(items[index]),
+                    builder: (context) => PlayerPage(
+                      item.artworkUrl600,
+                      item.contentFeeds[index],
+                    ),
                   ),
                 );
               },
@@ -133,7 +135,6 @@ class _CollectionPageState extends State<CollectionsPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           backgroundColor: Colors.black,
-          title: Text('Collection'),
         ),
         body: BlocBuilder<CollectionBloc, CollectionState>(
           builder: (context, state) {
@@ -144,7 +145,7 @@ class _CollectionPageState extends State<CollectionsPage> {
                   _buildCastDetail(collectionItem),
                   SizedBox(height: 16.0),
                   _buildTitle(),
-                  _buildContentFeed(collectionItem.contentFeeds)
+                  _buildContentFeed(collectionItem)
                 ],
               );
             } else {
