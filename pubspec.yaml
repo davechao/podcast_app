@@ -54,9 +54,6 @@ dependencies:
   # Equatable
   equatable: ^1.1.0
 
-  # Screen Util
-  flutter_screenutil: ^1.0.2
-
   # Device Preview
   device_preview: ^0.3.0+1
 

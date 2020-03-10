@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:podcastapp/bloc/player/player_bloc.dart';
+import 'package:podcastapp/bloc/player/player_state.dart';
 import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
 
 class PlayerPage extends StatefulWidget {
@@ -46,7 +48,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
   Widget _buildSlider() {
     return Slider(
-      value: 5,
+      value: 50,
       min: 0,
       max: 100,
       activeColor: Colors.white,
@@ -102,30 +104,32 @@ class _PlayerPageState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context);
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
       ),
-      body: Stack(
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+      body: BlocBuilder<PlayerBloc, PlayerState>(
+        builder: (context, state) {
+          return Stack(
             children: <Widget>[
-              _buildImg(widget.artworkUrl),
-              SizedBox(height: 10.0),
-              _buildSlider(),
-              SizedBox(height: 15.0),
-              _buildTitle(widget.contentFeedItem.title),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildImg(widget.artworkUrl),
+                  SizedBox(height: 10.0),
+                  _buildSlider(),
+                  SizedBox(height: 15.0),
+                  _buildTitle(widget.contentFeedItem.title),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildPlayer(widget.contentFeedItem.contentUrl),
+              ),
             ],
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: _buildPlayer(widget.contentFeedItem.contentUrl),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
