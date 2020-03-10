@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
@@ -32,5 +33,10 @@ void main() {
 
   Stetho.initialize();
   Fimber.plantTree(DebugTree());
+
+//  runApp(DevicePreview(
+//    builder: (context) => configProvider,
+//  ));
+
   runApp(configProvider);
 }

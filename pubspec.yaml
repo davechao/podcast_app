@@ -54,6 +54,9 @@ dependencies:
   # Equatable
   equatable: ^1.1.0
 
+  # Device Preview
+  device_preview: ^0.3.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

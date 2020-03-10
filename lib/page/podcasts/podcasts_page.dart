@@ -55,13 +55,17 @@ class _PodCastsState extends State<PodCastsPage> {
             ),
           ),
           SizedBox(height: 8.0),
-          Text(
-            item.name,
-            style: TextStyle(
-              color: Colors.white60,
-              fontSize: 12.0,
+          Expanded(
+            child: Text(
+              item.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.white60,
+                fontSize: 12.0,
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
