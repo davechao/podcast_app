@@ -4,12 +4,21 @@ abstract class PlayerEvent extends Equatable {
   const PlayerEvent();
 }
 
-class PlayMusic extends PlayerEvent {
+class StartPlayer extends PlayerEvent {
+  final String contentUrl;
+
+  StartPlayer(this.contentUrl);
+
+  @override
+  List<Object> get props => [contentUrl];
+}
+
+class PausePlayer extends PlayerEvent {
   @override
   List<Object> get props => [];
 }
 
-class PauseMusic extends PlayerEvent {
+class ResumePlayer extends PlayerEvent {
   @override
   List<Object> get props => [];
 }

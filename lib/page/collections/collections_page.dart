@@ -8,6 +8,7 @@ import 'package:podcastapp/bloc/collections/collection_state.dart';
 import 'package:podcastapp/bloc/player/player_bloc.dart';
 import 'package:podcastapp/model/repository/vo/collection_item.dart';
 import 'package:podcastapp/page/player/player_page.dart';
+import 'package:podcastapp/widget/customer_progress_indicator.dart';
 
 class CollectionsPage extends StatefulWidget {
   final String collectionId;
@@ -44,7 +45,7 @@ class _CollectionPageState extends State<CollectionsPage> {
                 width: 100.0,
                 height: 100.0,
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: CustomerProgressIndicator(),
                 ),
               );
             },
@@ -111,9 +112,7 @@ class _CollectionPageState extends State<CollectionsPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
-                      create: (context) => PlayerBloc(
-                        url: item.contentFeeds[index].contentUrl,
-                      ),
+                      create: (context) => PlayerBloc(),
                       child: PlayerPage(
                         item.artworkUrl600,
                         item.contentFeeds[index],
@@ -157,9 +156,7 @@ class _CollectionPageState extends State<CollectionsPage> {
               ],
             );
           } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return CustomerProgressIndicator();
           }
         },
       ),

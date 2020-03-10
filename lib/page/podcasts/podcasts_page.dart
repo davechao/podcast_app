@@ -11,6 +11,7 @@ import 'package:podcastapp/model/repository/podcast_repository.dart';
 import 'package:podcastapp/model/repository/vo/podcast_item.dart';
 import 'package:podcastapp/model/repository/vo/podcast_list_item.dart';
 import 'package:podcastapp/page/collections/collections_page.dart';
+import 'package:podcastapp/widget/customer_progress_indicator.dart';
 
 class PodCastsPage extends StatefulWidget {
   @override
@@ -41,9 +42,7 @@ class _PodCastsState extends State<PodCastsPage> {
               return Container(
                 width: 200.0,
                 height: 200.0,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: CustomerProgressIndicator(),
               );
             },
             errorWidget: (context, url, error) {
@@ -122,9 +121,7 @@ class _PodCastsState extends State<PodCastsPage> {
               },
             );
           } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return CustomerProgressIndicator();
           }
         },
       ),

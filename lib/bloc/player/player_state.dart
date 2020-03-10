@@ -12,3 +12,5 @@ class Loading extends PlayerState {}
 class Play extends PlayerState {}
 
 class Pause extends PlayerState {}
+
+class Resume extends PlayerState {}

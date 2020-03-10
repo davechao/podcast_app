@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:podcastapp/bloc/player/player_bloc.dart';
+import 'package:podcastapp/bloc/player/player_event.dart';
 import 'package:podcastapp/bloc/player/player_state.dart';
 import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
+import 'package:podcastapp/widget/customer_progress_indicator.dart';
 
 class PlayerPage extends StatefulWidget {
   final String artworkUrl;
@@ -23,7 +25,7 @@ class PlayerPage extends StatefulWidget {
 }
 
 class _PlayerPageState extends State<PlayerPage> {
-  FlutterSound flutterSound = FlutterSound();
+  PlayerBloc bloc;
 
   Widget _buildImg(String artworkUrl) {
     return CachedNetworkImage(
@@ -35,9 +37,7 @@ class _PlayerPageState extends State<PlayerPage> {
         return Container(
           width: 250.0,
           height: 250.0,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+          child: CustomerProgressIndicator(),
         );
       },
       errorWidget: (context, url, error) {
@@ -73,7 +73,7 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  Widget _buildPlayer(String contentUrl) {
+  Widget _buildPlayer(PlayerState state, String contentUrl) {
     return Padding(
       padding: EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -83,23 +83,35 @@ class _PlayerPageState extends State<PlayerPage> {
             icon: Icon(Icons.skip_previous, color: Colors.white),
             iconSize: 50.0,
           ),
-          IconButton(
-            icon: Icon(Icons.pause_circle_filled, color: Colors.white),
-            iconSize: 70.0,
-            onPressed: () {
-              flutterSound.startPlayer(contentUrl);
-            },
-          ),
+          state is Resume
+              ? IconButton(
+                  icon: Icon(Icons.pause_circle_filled, color: Colors.white),
+                  iconSize: 70.0,
+                  onPressed: () {
+                    bloc.add(PausePlayer());
+                  },
+                )
+              : IconButton(
+                  icon: Icon(Icons.play_circle_filled, color: Colors.white),
+                  iconSize: 70.0,
+                  onPressed: () {
+                    bloc.add(ResumePlayer());
+                  },
+                ),
           IconButton(
             icon: Icon(Icons.skip_next, color: Colors.white),
             iconSize: 50.0,
-            onPressed: () {
-              flutterSound.stopPlayer();
-            },
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = BlocProvider.of<PlayerBloc>(context);
+    bloc.add(StartPlayer(widget.contentFeedItem.contentUrl));
   }
 
   @override
@@ -117,15 +129,17 @@ class _PlayerPageState extends State<PlayerPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   _buildImg(widget.artworkUrl),
-                  SizedBox(height: 10.0),
-                  _buildSlider(),
-                  SizedBox(height: 15.0),
+                  SizedBox(height: 25.0),
+                  state is Loading
+                      ? CustomerProgressIndicator()
+                      : _buildSlider(),
+                  SizedBox(height: 20.0),
                   _buildTitle(widget.contentFeedItem.title),
                 ],
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: _buildPlayer(widget.contentFeedItem.contentUrl),
+                child: _buildPlayer(state, widget.contentFeedItem.contentUrl),
               ),
             ],
           );
