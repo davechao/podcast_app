@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:podcastapp/bloc/player/player_bloc.dart';
 import 'package:podcastapp/bloc/player/player_event.dart';
 import 'package:podcastapp/bloc/player/player_state.dart';
@@ -53,7 +52,10 @@ class _PlayerPageState extends State<PlayerPage> {
       max: 100,
       activeColor: Colors.white,
       inactiveColor: Colors.white30,
-      onChanged: (rating) {},
+      onChanged: (double value) {
+//        await flutterSound.seekToPlayer(value.toInt());
+      },
+      divisions: 100,
     );
   }
 
@@ -130,8 +132,11 @@ class _PlayerPageState extends State<PlayerPage> {
                 children: <Widget>[
                   _buildImg(widget.artworkUrl),
                   SizedBox(height: 25.0),
+//                  state is Loading
+//                      ? CustomerProgressIndicator()
+//                      : _buildSlider(),
                   state is Loading
-                      ? CustomerProgressIndicator()
+                      ? _buildSlider()
                       : _buildSlider(),
                   SizedBox(height: 20.0),
                   _buildTitle(widget.contentFeedItem.title),

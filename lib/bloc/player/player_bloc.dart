@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:podcastapp/bloc/player/player_event.dart';
 import 'package:podcastapp/bloc/player/player_state.dart';
 
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
-  FlutterSound flutterSound = FlutterSound();
+  AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   PlayerState get initialState => Loading();
@@ -13,13 +12,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   @override
   Stream<PlayerState> mapEventToState(PlayerEvent event) async* {
     if (event is StartPlayer) {
-      await flutterSound.startPlayer(event.contentUrl);
+      int result = await audioPlayer.play(event.contentUrl);
       yield Play();
     } else if (event is PausePlayer) {
-      flutterSound.pausePlayer();
+      int result = await audioPlayer.pause();
       yield Pause();
     } else if (event is ResumePlayer) {
-      flutterSound.resumePlayer();
+      int result = await audioPlayer.resume();
       yield Resume();
     }
   }
