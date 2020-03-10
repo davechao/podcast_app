@@ -85,7 +85,7 @@ class _PlayerPageState extends State<PlayerPage> {
             icon: Icon(Icons.skip_previous, color: Colors.white),
             iconSize: 50.0,
           ),
-          state is Resume
+          state is Play || state is Resume
               ? IconButton(
                   icon: Icon(Icons.pause_circle_filled, color: Colors.white),
                   iconSize: 70.0,
