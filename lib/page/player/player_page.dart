@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
 
@@ -39,48 +40,6 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  Widget _buildTitle(String title) {
-    return Text(
-      title,
-      maxLines: 3,
-      overflow: TextOverflow.ellipsis,
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 25.0,
-      ),
-    );
-  }
-
-  Widget _buildPlayer() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        IconButton(
-          icon: Icon(
-            Icons.skip_previous,
-            color: Colors.white,
-            size: 50.0,
-          ),
-        ),
-        IconButton(
-          icon: Icon(
-            Icons.pause_circle_filled,
-            color: Colors.white,
-            size: 50.0,
-          ),
-        ),
-        IconButton(
-          icon: Icon(
-            Icons.skip_next,
-            color: Colors.white,
-            size: 50.0,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSlider() {
     return Slider(
       value: 5,
@@ -92,8 +51,48 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
+  Widget _buildTitle(String title) {
+    return Padding(
+      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+      child: Text(
+        title,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlayer() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.skip_previous, color: Colors.white),
+            iconSize: 50.0,
+          ),
+          IconButton(
+            icon: Icon(Icons.pause_circle_filled, color: Colors.white),
+            iconSize: 70.0,
+          ),
+          IconButton(
+            icon: Icon(Icons.skip_next, color: Colors.white),
+            iconSize: 50.0,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -101,15 +100,22 @@ class _PlayerPageState extends State<PlayerPage> {
         appBar: AppBar(
           backgroundColor: Colors.black,
         ),
-        body: Column(
+        body: Stack(
           children: <Widget>[
-            _buildImg(widget.artworkUrl),
-            SizedBox(height: 20.0),
-            _buildSlider(),
-            SizedBox(height: 40.0),
-            _buildTitle(widget.contentFeedItem.title),
-            SizedBox(height: 60.0),
-            _buildPlayer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                _buildImg(widget.artworkUrl),
+                SizedBox(height: 10.0),
+                _buildSlider(),
+                SizedBox(height: 15.0),
+                _buildTitle(widget.contentFeedItem.title),
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildPlayer(),
+            ),
           ],
         ),
       ),
