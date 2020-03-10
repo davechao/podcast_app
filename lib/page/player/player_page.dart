@@ -30,8 +30,12 @@ class _PlayerPageState extends State<PlayerPage> {
       fit: BoxFit.fill,
       imageUrl: artworkUrl,
       placeholder: (context, url) {
-        return Center(
-          child: CircularProgressIndicator(),
+        return Container(
+          width: 250.0,
+          height: 250.0,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
       errorWidget: (context, url, error) {
@@ -67,7 +71,7 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  Widget _buildPlayer() {
+  Widget _buildPlayer(String contentUrl) {
     return Padding(
       padding: EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -80,10 +84,16 @@ class _PlayerPageState extends State<PlayerPage> {
           IconButton(
             icon: Icon(Icons.pause_circle_filled, color: Colors.white),
             iconSize: 70.0,
+            onPressed: () {
+              flutterSound.startPlayer(contentUrl);
+            },
           ),
           IconButton(
             icon: Icon(Icons.skip_next, color: Colors.white),
             iconSize: 50.0,
+            onPressed: () {
+              flutterSound.stopPlayer();
+            },
           ),
         ],
       ),
@@ -93,38 +103,30 @@ class _PlayerPageState extends State<PlayerPage> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-        ),
-        body: Stack(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                _buildImg(widget.artworkUrl),
-                SizedBox(height: 10.0),
-                _buildSlider(),
-                SizedBox(height: 15.0),
-                _buildTitle(widget.contentFeedItem.title),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: _buildPlayer(),
-            ),
-          ],
-        ),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _buildImg(widget.artworkUrl),
+              SizedBox(height: 10.0),
+              _buildSlider(),
+              SizedBox(height: 15.0),
+              _buildTitle(widget.contentFeedItem.title),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildPlayer(widget.contentFeedItem.contentUrl),
+          ),
+        ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    flutterSound.stopPlayer();
-    super.dispose();
   }
 }

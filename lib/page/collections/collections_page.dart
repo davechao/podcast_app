@@ -39,8 +39,12 @@ class _CollectionPageState extends State<CollectionsPage> {
             fit: BoxFit.fill,
             imageUrl: item.artworkUrl100,
             placeholder: (context, url) {
-              return Center(
-                child: CircularProgressIndicator(),
+              return Container(
+                width: 100.0,
+                height: 100.0,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             },
             errorWidget: (context, url, error) {
@@ -125,36 +129,33 @@ class _CollectionPageState extends State<CollectionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          backgroundColor: Colors.black,
-        ),
-        body: BlocBuilder<CollectionBloc, CollectionState>(
-          builder: (context, state) {
-            if (state is Success) {
-              final collectionItem = state.podCastDetailItem.collectionItem;
-              return Column(
-                children: <Widget>[
-                  _buildCastDetail(collectionItem),
-                  SizedBox(height: 16.0),
-                  _buildTitle(),
-                  _buildContentFeed(collectionItem)
-                ],
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ),
+      ),
+      body: BlocBuilder<CollectionBloc, CollectionState>(
+        builder: (context, state) {
+          if (state is Success) {
+            final collectionItem = state.podCastDetailItem.collectionItem;
+            return Column(
+              children: <Widget>[
+                _buildCastDetail(collectionItem),
+                SizedBox(height: 16.0),
+                _buildTitle(),
+                _buildContentFeed(collectionItem)
+              ],
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

@@ -38,8 +38,12 @@ class _PodCastsState extends State<PodCastsPage> {
           CachedNetworkImage(
             imageUrl: item.artworkUrl100,
             placeholder: (context, url) {
-              return Center(
-                child: CircularProgressIndicator(),
+              return Container(
+                width: 200.0,
+                height: 200.0,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             },
             errorWidget: (context, url, error) {
