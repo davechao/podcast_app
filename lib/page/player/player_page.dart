@@ -82,7 +82,7 @@ class _PlayerPageState extends State<PlayerPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.skip_previous, color: Colors.white),
+            icon: Icon(Icons.replay_30, color: Colors.white70),
             iconSize: 50.0,
           ),
           state is Play || state is Resume
@@ -101,7 +101,7 @@ class _PlayerPageState extends State<PlayerPage> {
                   },
                 ),
           IconButton(
-            icon: Icon(Icons.skip_next, color: Colors.white),
+            icon: Icon(Icons.forward_30, color: Colors.white70),
             iconSize: 50.0,
           ),
         ],
