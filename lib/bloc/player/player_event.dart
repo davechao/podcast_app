@@ -22,3 +22,21 @@ class ResumePlayer extends PlayerEvent {
   @override
   List<Object> get props => [];
 }
+
+class ReplayPlayer extends PlayerEvent {
+  final int milliseconds;
+
+  ReplayPlayer(this.milliseconds);
+
+  @override
+  List<Object> get props => [milliseconds];
+}
+
+class ForwardPlayer extends PlayerEvent {
+  final int milliseconds;
+
+  ForwardPlayer(this.milliseconds);
+
+  @override
+  List<Object> get props => [milliseconds];
+}

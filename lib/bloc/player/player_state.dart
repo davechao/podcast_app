@@ -14,3 +14,7 @@ class Play extends PlayerState {}
 class Pause extends PlayerState {}
 
 class Resume extends PlayerState {}
+
+class Replay extends PlayerState {}
+
+class Forward extends PlayerState {}
