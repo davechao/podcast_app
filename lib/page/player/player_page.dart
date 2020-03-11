@@ -40,9 +40,11 @@ class _PlayerPageState extends State<PlayerPage> {
 
   get _isPlaying => _playerState == PlayerState.playing;
 
-  get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+  get _durationText =>
+      _duration?.toString()?.split('.')?.first?.substring(2) ?? '';
 
-  get _positionText => _position?.toString()?.split('.')?.first ?? '';
+  get _positionText =>
+      _position?.toString()?.split('.')?.first?.substring(2) ?? '';
 
   void _initAudioPlayer() {
     _audioPlayer = AudioPlayer();
@@ -136,7 +138,7 @@ class _PlayerPageState extends State<PlayerPage> {
 
   Widget _buildSlider() {
     return Slider(
-      activeColor: Colors.white,
+      activeColor: Colors.white70,
       inactiveColor: Colors.white30,
       value: (_position != null &&
               _duration != null &&
@@ -150,6 +152,25 @@ class _PlayerPageState extends State<PlayerPage> {
           Duration(milliseconds: position.round()),
         );
       },
+    );
+  }
+
+  Widget _buildDuration() {
+    return Padding(
+      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            _position != null ? _positionText : "",
+            style: TextStyle(color: Colors.white70),
+          ),
+          Text(
+            _position != null ? _durationText : "",
+            style: TextStyle(color: Colors.white70),
+          ),
+        ],
+      ),
     );
   }
 
@@ -252,6 +273,7 @@ class _PlayerPageState extends State<PlayerPage> {
               _buildImg(widget.artworkUrl),
               SizedBox(height: 25.0),
               _buildSlider(),
+              _buildDuration(),
               SizedBox(height: 20.0),
               _buildTitle(widget.contentFeedItem.title),
             ],
