@@ -53,7 +53,7 @@ class _PlayerPageState extends State<PlayerPage> {
       activeColor: Colors.white,
       inactiveColor: Colors.white30,
       onChanged: (double value) {
-//        await flutterSound.seekToPlayer(value.toInt());
+        print("@@newValue: $value");
       },
       divisions: 100,
     );
