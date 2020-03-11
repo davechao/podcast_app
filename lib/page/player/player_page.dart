@@ -125,29 +125,28 @@ class _PlayerPageState extends State<PlayerPage> {
       ),
       body: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
-          return Stack(
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  _buildImg(widget.artworkUrl),
-                  SizedBox(height: 25.0),
-//                  state is Loading
-//                      ? CustomerProgressIndicator()
-//                      : _buildSlider(),
-                  state is Loading
-                      ? _buildSlider()
-                      : _buildSlider(),
-                  SizedBox(height: 20.0),
-                  _buildTitle(widget.contentFeedItem.title),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildPlayer(state, widget.contentFeedItem.contentUrl),
-              ),
-            ],
-          );
+          if (state is Loading) {
+            return CustomerProgressIndicator();
+          } else {
+            return Stack(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    _buildImg(widget.artworkUrl),
+                    SizedBox(height: 25.0),
+                    _buildSlider(),
+                    SizedBox(height: 20.0),
+                    _buildTitle(widget.contentFeedItem.title),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildPlayer(state, widget.contentFeedItem.contentUrl),
+                ),
+              ],
+            );
+          }
         },
       ),
     );

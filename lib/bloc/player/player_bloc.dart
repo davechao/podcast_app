@@ -13,13 +13,21 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   Stream<PlayerState> mapEventToState(PlayerEvent event) async* {
     if (event is StartPlayer) {
       int result = await audioPlayer.play(event.contentUrl);
-      yield Play();
+      if (result == 1) {
+        yield Play();
+      } else {
+        yield Loading();
+      }
     } else if (event is PausePlayer) {
       int result = await audioPlayer.pause();
-      yield Pause();
+      if (result == 1) {
+        yield Pause();
+      }
     } else if (event is ResumePlayer) {
       int result = await audioPlayer.resume();
-      yield Resume();
+      if (result == 1) {
+        yield Resume();
+      }
     }
   }
 }
