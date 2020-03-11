@@ -1,12 +1,13 @@
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podcastapp/bloc/player/player_bloc.dart';
-import 'package:podcastapp/bloc/player/player_event.dart';
-import 'package:podcastapp/bloc/player/player_state.dart';
 import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
 import 'package:podcastapp/widget/customer_progress_indicator.dart';
+
+enum PlayerState { stopped, playing, paused }
 
 class PlayerPage extends StatefulWidget {
   final String artworkUrl;
@@ -24,7 +25,95 @@ class PlayerPage extends StatefulWidget {
 }
 
 class _PlayerPageState extends State<PlayerPage> {
-  PlayerBloc bloc;
+  AudioPlayer _audioPlayer;
+  AudioPlayerState _audioPlayerState;
+
+  Duration _duration;
+  Duration _position;
+
+  PlayerState _playerState = PlayerState.stopped;
+  StreamSubscription _durationSubscription;
+  StreamSubscription _positionSubscription;
+  StreamSubscription _playerCompleteSubscription;
+  StreamSubscription _playerErrorSubscription;
+  StreamSubscription _playerStateSubscription;
+
+  get _isPlaying => _playerState == PlayerState.playing;
+
+  get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+
+  get _positionText => _position?.toString()?.split('.')?.first ?? '';
+
+  void _initAudioPlayer() {
+    _audioPlayer = AudioPlayer();
+
+    _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
+      setState(() => _duration = duration);
+    });
+
+    _positionSubscription = _audioPlayer.onAudioPositionChanged.listen((p) {
+      setState(() {
+        _position = p;
+      });
+    });
+
+    _playerCompleteSubscription =
+        _audioPlayer.onPlayerCompletion.listen((event) {
+      _onComplete();
+      setState(() {
+        _position = _duration;
+      });
+    });
+
+    _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
+      print('audioPlayer error : $msg');
+      setState(() {
+        _duration = Duration(seconds: 0);
+        _position = Duration(seconds: 0);
+      });
+    });
+
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      if (!mounted) return;
+      setState(() {
+        _audioPlayerState = state;
+      });
+    });
+  }
+
+  Future<int> _play(String url) async {
+    final playPosition = (_position != null &&
+            _duration != null &&
+            _position.inMilliseconds > 0 &&
+            _position.inMilliseconds < _duration.inMilliseconds)
+        ? _position
+        : null;
+    final result = await _audioPlayer.play(url, position: playPosition);
+    if (result == 1) setState(() => _playerState = PlayerState.playing);
+    _audioPlayer.setPlaybackRate(playbackRate: 1.0);
+    return result;
+  }
+
+  Future<int> _pause() async {
+    final result = await _audioPlayer.pause();
+    if (result == 1) setState(() => _playerState = PlayerState.paused);
+    return result;
+  }
+
+  Future<int> _stop() async {
+    final result = await _audioPlayer.stop();
+    if (result == 1) {
+      setState(() {
+        _playerState = PlayerState.stopped;
+        _position = Duration();
+      });
+    }
+    return result;
+  }
+
+  void _onComplete() {
+    setState(() => _playerState = PlayerState.stopped);
+  }
 
   Widget _buildImg(String artworkUrl) {
     return CachedNetworkImage(
@@ -47,15 +136,20 @@ class _PlayerPageState extends State<PlayerPage> {
 
   Widget _buildSlider() {
     return Slider(
-      value: 50,
-      min: 0,
-      max: 100,
       activeColor: Colors.white,
       inactiveColor: Colors.white30,
-      onChanged: (double value) {
-        print("@@newValue: $value");
+      value: (_position != null &&
+              _duration != null &&
+              _position.inMilliseconds > 0 &&
+              _position.inMilliseconds < _duration.inMilliseconds)
+          ? _position.inMilliseconds / _duration.inMilliseconds
+          : 0.0,
+      onChanged: (value) {
+        final position = value * _duration.inMilliseconds;
+        _audioPlayer.seek(
+          Duration(milliseconds: position.round()),
+        );
       },
-      divisions: 100,
     );
   }
 
@@ -75,7 +169,7 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  Widget _buildPlayer(PlayerState state, String contentUrl) {
+  Widget _buildPlayer(String url) {
     return Padding(
       padding: EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -84,25 +178,41 @@ class _PlayerPageState extends State<PlayerPage> {
           IconButton(
             icon: Icon(Icons.replay_30, color: Colors.white70),
             iconSize: 50.0,
+            onPressed: () {
+              if (_isPlaying) {
+                _position = Duration(
+                  milliseconds: _position.inMilliseconds - 30000,
+                );
+                _play(url);
+              } else {
+                _position = null;
+              }
+            },
           ),
-          state is Play || state is Resume
+          _isPlaying
               ? IconButton(
                   icon: Icon(Icons.pause_circle_filled, color: Colors.white),
                   iconSize: 70.0,
-                  onPressed: () {
-                    bloc.add(PausePlayer());
-                  },
+                  onPressed: _isPlaying ? () => _pause() : null,
                 )
               : IconButton(
                   icon: Icon(Icons.play_circle_filled, color: Colors.white),
                   iconSize: 70.0,
-                  onPressed: () {
-                    bloc.add(ResumePlayer());
-                  },
+                  onPressed: _isPlaying ? null : () => _play(url),
                 ),
           IconButton(
             icon: Icon(Icons.forward_30, color: Colors.white70),
             iconSize: 50.0,
+            onPressed: () {
+              if (_isPlaying) {
+                _position = Duration(
+                  milliseconds: _position.inMilliseconds + 30000,
+                );
+                _play(url);
+              } else {
+                _position = null;
+              }
+            },
           ),
         ],
       ),
@@ -112,8 +222,19 @@ class _PlayerPageState extends State<PlayerPage> {
   @override
   void initState() {
     super.initState();
-    bloc = BlocProvider.of<PlayerBloc>(context);
-    bloc.add(StartPlayer(widget.contentFeedItem.contentUrl));
+    _initAudioPlayer();
+    _play(widget.contentFeedItem.contentUrl);
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.stop();
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _playerCompleteSubscription?.cancel();
+    _playerErrorSubscription?.cancel();
+    _playerStateSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -123,31 +244,23 @@ class _PlayerPageState extends State<PlayerPage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
       ),
-      body: BlocBuilder<PlayerBloc, PlayerState>(
-        builder: (context, state) {
-          if (state is Loading) {
-            return CustomerProgressIndicator();
-          } else {
-            return Stack(
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildImg(widget.artworkUrl),
-                    SizedBox(height: 25.0),
-                    _buildSlider(),
-                    SizedBox(height: 20.0),
-                    _buildTitle(widget.contentFeedItem.title),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _buildPlayer(state, widget.contentFeedItem.contentUrl),
-                ),
-              ],
-            );
-          }
-        },
+      body: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _buildImg(widget.artworkUrl),
+              SizedBox(height: 25.0),
+              _buildSlider(),
+              SizedBox(height: 20.0),
+              _buildTitle(widget.contentFeedItem.title),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildPlayer(widget.contentFeedItem.contentUrl),
+          ),
+        ],
       ),
     );
   }

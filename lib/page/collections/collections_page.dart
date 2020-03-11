@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podcastapp/bloc/collections/collection_bloc.dart';
 import 'package:podcastapp/bloc/collections/collection_event.dart';
 import 'package:podcastapp/bloc/collections/collection_state.dart';
-import 'package:podcastapp/bloc/player/player_bloc.dart';
 import 'package:podcastapp/model/repository/vo/collection_item.dart';
 import 'package:podcastapp/page/player/player_page.dart';
 import 'package:podcastapp/widget/customer_progress_indicator.dart';
@@ -111,12 +110,9 @@ class _CollectionPageState extends State<CollectionsPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => PlayerBloc(),
-                      child: PlayerPage(
-                        item.artworkUrl600,
-                        item.contentFeeds[index],
-                      ),
+                    builder: (context) => PlayerPage(
+                      item.artworkUrl600,
+                      item.contentFeeds[index],
                     ),
                   ),
                 );
