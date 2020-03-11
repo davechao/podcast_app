@@ -161,10 +161,18 @@ class _PlayerPageState extends State<PlayerPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            _position != null ? _positionText : "",
-            style: TextStyle(color: Colors.white70),
-          ),
+          _position != null
+              ? Text(
+                  _positionText,
+                  style: TextStyle(color: Colors.white70),
+                )
+              : SizedBox(
+                  width: 20.0,
+                  height: 20.0,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                  ),
+                ),
           Text(
             _position != null ? _durationText : "",
             style: TextStyle(color: Colors.white70),
