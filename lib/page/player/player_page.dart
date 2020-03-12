@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:podcastapp/model/repository/vo/content_feed_item.dart';
 import 'package:podcastapp/widget/customer_progress_indicator.dart';
-
-enum PlayerState { stopped, playing, paused }
 
 class PlayerPage extends StatefulWidget {
   final String artworkUrl;
@@ -26,19 +25,18 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerPageState extends State<PlayerPage> {
   AudioPlayer _audioPlayer;
-  AudioPlayerState _audioPlayerState;
+  AudioPlayerState _playerState = AudioPlayerState.STOPPED;
 
   Duration _duration;
   Duration _position;
 
-  PlayerState _playerState = PlayerState.stopped;
   StreamSubscription _durationSubscription;
   StreamSubscription _positionSubscription;
   StreamSubscription _playerCompleteSubscription;
   StreamSubscription _playerErrorSubscription;
   StreamSubscription _playerStateSubscription;
 
-  get _isPlaying => _playerState == PlayerState.playing;
+  get _isPlaying => _playerState == AudioPlayerState.PLAYING;
 
   get _durationText =>
       _duration?.toString()?.split('.')?.first?.substring(2) ?? '';
@@ -50,7 +48,9 @@ class _PlayerPageState extends State<PlayerPage> {
     _audioPlayer = AudioPlayer();
 
     _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() => _duration = duration);
+      setState(() {
+        _duration = duration;
+      });
     });
 
     _positionSubscription = _audioPlayer.onAudioPositionChanged.listen((p) {
@@ -61,14 +61,14 @@ class _PlayerPageState extends State<PlayerPage> {
 
     _playerCompleteSubscription =
         _audioPlayer.onPlayerCompletion.listen((event) {
-      _onComplete();
       setState(() {
+        _playerState = AudioPlayerState.STOPPED;
         _position = _duration;
       });
     });
 
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
-      print('audioPlayer error : $msg');
+      Fimber.e("AudioPlayer error: $msg");
       setState(() {
         _duration = Duration(seconds: 0);
         _position = Duration(seconds: 0);
@@ -78,7 +78,7 @@ class _PlayerPageState extends State<PlayerPage> {
     _audioPlayer.onPlayerStateChanged.listen((state) {
       if (!mounted) return;
       setState(() {
-        _audioPlayerState = state;
+        _playerState = state;
       });
     });
   }
@@ -91,14 +91,22 @@ class _PlayerPageState extends State<PlayerPage> {
         ? _position
         : null;
     final result = await _audioPlayer.play(url, position: playPosition);
-    if (result == 1) setState(() => _playerState = PlayerState.playing);
+    if (result == 1) {
+      setState(() {
+        _playerState = AudioPlayerState.PLAYING;
+      });
+    }
     _audioPlayer.setPlaybackRate(playbackRate: 1.0);
     return result;
   }
 
   Future<int> _pause() async {
     final result = await _audioPlayer.pause();
-    if (result == 1) setState(() => _playerState = PlayerState.paused);
+    if (result == 1) {
+      setState(() {
+        _playerState = AudioPlayerState.PAUSED;
+      });
+    }
     return result;
   }
 
@@ -106,15 +114,11 @@ class _PlayerPageState extends State<PlayerPage> {
     final result = await _audioPlayer.stop();
     if (result == 1) {
       setState(() {
-        _playerState = PlayerState.stopped;
+        _playerState = AudioPlayerState.STOPPED;
         _position = Duration();
       });
     }
     return result;
-  }
-
-  void _onComplete() {
-    setState(() => _playerState = PlayerState.stopped);
   }
 
   Widget _buildImg(String artworkUrl) {
