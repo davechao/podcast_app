@@ -1,6 +1,19 @@
-# podcastapp
+# Podcasts App
 
-A podcast flutter application.
+A podcasts flutter application.
 
 ## Screenshots
-
+<table>
+  <tr>
+    <td>
+      <img src="screenshots/podcasts.png"/>
+    </td>
+    <td>
+      <img src="screenshots/collections.png">
+    </td>
+    <td>
+      <img src="screenshots/player.png">
+    </td>
+  </tr>
+</table>
+ 
