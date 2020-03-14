@@ -25,9 +25,6 @@ class PodCastBloc extends Bloc<PodCastEvent, PodCastState> {
           yield Error(result.exception.toString());
           return;
         }
-        if (result.loading) {
-          yield Loading();
-        }
 
         final podCasts = PodCastListItem.fromJson(result.data);
         yield Success(podCasts);

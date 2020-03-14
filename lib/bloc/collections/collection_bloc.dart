@@ -25,13 +25,9 @@ class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
           yield Error(result.exception.toString());
           return;
         }
-        if (result.loading) {
-          yield Loading();
-        }
 
         final podCastDetailItem = PodCastDetailItem.fromJson(result.data);
         yield Success(podCastDetailItem);
-
       } catch (error) {
         Fimber.e("Error: $error");
         yield Error(error);

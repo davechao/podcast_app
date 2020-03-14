@@ -42,6 +42,9 @@ dependencies:
   # Audio Players
   audioplayers: ^0.14.0
 
+  # Pull To Refresh
+  pull_to_refresh: ^1.5.8
+
   # JSON Annotation
   json_annotation: ^3.0.1
 

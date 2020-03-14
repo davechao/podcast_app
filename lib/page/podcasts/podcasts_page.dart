@@ -12,6 +12,7 @@ import 'package:podcastapp/model/repository/vo/podcast_item.dart';
 import 'package:podcastapp/model/repository/vo/podcast_list_item.dart';
 import 'package:podcastapp/page/collections/collections_page.dart';
 import 'package:podcastapp/widget/customer_progress_indicator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PodCastsPage extends StatefulWidget {
   @override
@@ -23,10 +24,11 @@ class PodCastsPage extends StatefulWidget {
 class _PodCastsState extends State<PodCastsPage> {
   PodCastBloc bloc;
 
-  @override
-  void initState() {
-    super.initState();
-    bloc = BlocProvider.of<PodCastBloc>(context);
+  RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
+
+  void _onRefresh() {
     bloc.add(FetchPodCasts());
   }
 
@@ -75,6 +77,13 @@ class _PodCastsState extends State<PodCastsPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    bloc = BlocProvider.of<PodCastBloc>(context);
+    bloc.add(FetchPodCasts());
+  }
+
+  @override
   Widget build(BuildContext context) {
     Config _config = ConfigProvider.of(context).config;
 
@@ -86,39 +95,49 @@ class _PodCastsState extends State<PodCastsPage> {
       ),
       body: BlocBuilder<PodCastBloc, PodCastState>(
         builder: (context, state) {
+          if (_refreshController.isRefresh) {
+            _refreshController.refreshCompleted();
+          }
+
           if (state is Success) {
             PodCastListItem podCastListItem = state.podCasts;
             List<PodCastItem> podCasts = podCastListItem.podCasts;
 
-            return GridView.builder(
-              itemCount: podCasts.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-              ),
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 2.0, right: 2.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) => CollectionBloc(
-                              repository: PodCastRepository(
-                                client: _config.graphQLClient,
+            return SmartRefresher(
+              enablePullDown: true,
+              header: ClassicHeader(),
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              child: GridView.builder(
+                itemCount: podCasts.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.7,
+                ),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(left: 2.0, right: 2.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                              create: (context) => CollectionBloc(
+                                repository: PodCastRepository(
+                                  client: _config.graphQLClient,
+                                ),
                               ),
+                              child: CollectionsPage(podCasts[index].id),
                             ),
-                            child: CollectionsPage(podCasts[index].id),
                           ),
-                        ),
-                      );
-                    },
-                    child: _buildCastCard(podCasts[index]),
-                  ),
-                );
-              },
+                        );
+                      },
+                      child: _buildCastCard(podCasts[index]),
+                    ),
+                  );
+                },
+              ),
             );
           } else {
             return CustomerProgressIndicator();

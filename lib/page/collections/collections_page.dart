@@ -23,13 +23,6 @@ class CollectionsPage extends StatefulWidget {
 class _CollectionPageState extends State<CollectionsPage> {
   CollectionBloc bloc;
 
-  @override
-  void initState() {
-    super.initState();
-    bloc = BlocProvider.of<CollectionBloc>(context);
-    bloc.add(FetchPodCastDetail(widget.collectionId));
-  }
-
   Widget _buildCastDetail(CollectionItem item) {
     return Padding(
       padding: EdgeInsets.only(left: 8.0, right: 8.0),
@@ -126,6 +119,13 @@ class _CollectionPageState extends State<CollectionsPage> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = BlocProvider.of<CollectionBloc>(context);
+    bloc.add(FetchPodCastDetail(widget.collectionId));
   }
 
   @override
