@@ -4,7 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podcastapp/bloc/login/login_bloc.dart';
 import 'package:podcastapp/bloc/login/login_event.dart';
 import 'package:podcastapp/bloc/login/login_state.dart';
+import 'package:podcastapp/bloc/podcasts/podcast_bloc.dart';
+import 'package:podcastapp/model/config.dart';
+import 'package:podcastapp/model/config_provider.dart';
+import 'package:podcastapp/model/repository/podcast_repository.dart';
 import 'package:podcastapp/model/repository/vo/login_request.dart';
+import 'package:podcastapp/page/podcasts/podcasts_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -21,20 +26,20 @@ class _LoginPageState extends State<LoginPage> {
 
   String animationType = "idle";
 
-  @override
-  initState() {
-    _passwordFocusNode.addListener(() {
-      if (_passwordFocusNode.hasFocus) {
-        bloc.add(UpdateAnimation("cover_eyes_in"));
-      } else {
-        if (animationType == "cover_eyes_in") {
-          bloc.add(UpdateAnimation("cover_eyes_out"));
-        }
-      }
-    });
-
-    super.initState();
-    bloc = BlocProvider.of<LoginBloc>(context);
+  void _navigateToHomeScreen() {
+    Config _config = ConfigProvider.of(context).config;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => PodCastBloc(
+            repository: PodCastRepository(
+              client: _config.graphQLClient,
+            ),
+          ),
+          child: PodCastsPage(),
+        ),
+      ),
+    );
   }
 
   Widget _buildBackground() {
@@ -157,51 +162,73 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  initState() {
+    super.initState();
+    _passwordFocusNode.addListener(() {
+      if (_passwordFocusNode.hasFocus) {
+        bloc.add(UpdateAnimation("cover_eyes_in"));
+      } else {
+        if (animationType == "cover_eyes_in") {
+          bloc.add(UpdateAnimation("cover_eyes_out"));
+        }
+      }
+    });
+    bloc = BlocProvider.of<LoginBloc>(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     EdgeInsets devicePadding = MediaQuery.of(context).padding;
     return Scaffold(
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-          if (animationType == "cover_eyes_in") {
-            bloc.add(UpdateAnimation("cover_eyes_out"));
-          } else {
-            bloc.add(UpdateAnimation("idle"));
+      body: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state is Success) {
+            _navigateToHomeScreen();
           }
         },
-        child: Stack(
-          children: <Widget>[
-            _buildBackground(),
-            Positioned.fill(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(
-                  left: 20.0,
-                  right: 20.0,
-                  top: devicePadding.top + 50.0,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildGuss(animationType),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(25.0),
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            if (animationType == "cover_eyes_in") {
+              bloc.add(UpdateAnimation("cover_eyes_out"));
+            } else {
+              bloc.add(UpdateAnimation("idle"));
+            }
+          },
+          child: Stack(
+            children: <Widget>[
+              _buildBackground(),
+              Positioned.fill(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    left: 20.0,
+                    right: 20.0,
+                    top: devicePadding.top + 50.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      _buildGuss(animationType),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(25.0),
+                          ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(30.0),
-                        child: _buildForm(),
-                      ),
-                    )
-                  ],
+                        child: Padding(
+                          padding: EdgeInsets.all(30.0),
+                          child: _buildForm(),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
