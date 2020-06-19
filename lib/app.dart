@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podcastapp/bloc/podcasts/podcast_bloc.dart';
+import 'package:podcastapp/bloc/login/login_bloc.dart';
 import 'package:podcastapp/model/config.dart';
 import 'package:podcastapp/model/config_provider.dart';
-import 'package:podcastapp/model/repository/podcast_repository.dart';
-import 'package:podcastapp/page/podcasts/podcasts_page.dart';
+import 'package:podcastapp/model/repository/account_repository.dart';
+import 'package:podcastapp/page/login/login_page.dart';
 
 class App extends StatelessWidget {
   @override
@@ -12,15 +12,25 @@ class App extends StatelessWidget {
     Config _config = ConfigProvider.of(context).config;
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (context) => PodCastBloc(
-          repository: PodCastRepository(
-            client: _config.graphQLClient,
+        debugShowCheckedModeBanner: false,
+        home: BlocProvider(
+          create: (context) => LoginBloc(
+            repository: AccountRepository(
+              _config.apiBaseUrl,
+            ),
           ),
-        ),
-        child: PodCastsPage(),
-      ),
-    );
+          child: LoginPage(),
+        )
+
+//      home: BlocProvider(
+//        create: (context) => PodCastBloc(
+//          repository: PodCastRepository(
+//            client: _config.graphQLClient,
+//          ),
+//        ),
+//        child: PodCastsPage(),
+//      ),
+
+        );
   }
 }

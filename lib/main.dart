@@ -27,6 +27,7 @@ void main() {
     config: Config(
       flavor: 'prod',
       graphQLClient: _initGraphQLClient(),
+      apiBaseUrl: 'https://api.moshiqhwh.com/'
     ),
     child: App(),
   );
