@@ -25,22 +25,22 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   # Bloc
-  bloc: ^3.0.0
+  bloc: ^4.0.0
 
   # Flutter Bloc
-  flutter_bloc: ^3.2.0
+  flutter_bloc: ^4.0.1
 
   # Graphql
-  graphql_flutter: ^3.0.0
+  graphql_flutter: ^3.0.1
 
   # Dio
   dio: ^3.0.9
 
   # Cached Network Image
-  cached_network_image: ^2.0.0
+  cached_network_image: ^2.2.0+1
 
   # Audio Players
-  audioplayers: ^0.14.0
+  audioplayers: ^0.15.1
 
   # Pull To Refresh
   pull_to_refresh: ^1.5.8
@@ -49,23 +49,23 @@ dependencies:
   json_annotation: ^3.0.1
 
   # Fimber
-  fimber: ^0.4.0
+  fimber: ^0.4.2
 
   # Stetho
   flutter_stetho: ^0.5.2
 
   # Equatable
-  equatable: ^1.1.0
+  equatable: ^1.2.0
 
   # Device Preview
-  device_preview: ^0.3.0+1
+  device_preview: ^0.4.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # JSON Serializable
-  json_serializable: ^3.2.5
+  json_serializable: ^3.3.0
 
   build_runner: ^1.7.4
 
