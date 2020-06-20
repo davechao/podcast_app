@@ -22,12 +22,3 @@ class Success extends LoginState {
   @override
   List<Object> get props => [loginItem];
 }
-
-class UpdateAnimationResult extends LoginState {
-  final String type;
-
-  UpdateAnimationResult([this.type]) : assert(type != null);
-
-  @override
-  List<Object> get props => [type];
-}

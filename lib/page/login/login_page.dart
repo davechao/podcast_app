@@ -1,6 +1,7 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:podcastapp/bloc/animation/animation_bloc.dart';
 import 'package:podcastapp/bloc/login/login_bloc.dart';
 import 'package:podcastapp/bloc/login/login_event.dart';
 import 'package:podcastapp/bloc/login/login_state.dart';
@@ -17,14 +18,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  LoginBloc bloc;
+  LoginBloc loginBloc;
+  AnimationBloc animationBloc;
 
   final _formKey = GlobalKey<FormState>();
   final _accountController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordFocusNode = FocusNode();
-
-  String animationType = "idle";
 
   void _navigateToHomeScreen() {
     Config _config = ConfigProvider.of(context).config;
@@ -58,18 +58,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildGuss(String type) {
-    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-      if (state is Success) {
-        type = "success";
-      } else if (state is Error) {
-        type = "fail";
-      } else if (state is UpdateAnimationResult) {
-        type = state.type;
-      } else {
-        type = "idle";
-      }
-      animationType = type;
+  Widget _buildGuss() {
+    return BlocBuilder<AnimationBloc, String>(builder: (context, state) {
       return Container(
         height: 200,
         padding: EdgeInsets.only(left: 30.0, right: 30.0),
@@ -78,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           shouldClip: false,
           alignment: Alignment.topCenter,
           fit: BoxFit.cover,
-          animation: animationType,
+          animation: state,
         ),
       );
     });
@@ -107,6 +97,13 @@ class _LoginPageState extends State<LoginPage> {
           labelText: "Account",
           hintText: "Please enter your account",
         ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return "Please enter your account";
+          } else {
+            return null;
+          }
+        },
         controller: _accountController,
       ),
     );
@@ -121,6 +118,13 @@ class _LoginPageState extends State<LoginPage> {
           labelText: "Password",
           hintText: "Please enter your password",
         ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return "Please enter your password";
+          } else {
+            return null;
+          }
+        },
         controller: _passwordController,
         focusNode: _passwordFocusNode,
       ),
@@ -152,10 +156,12 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         onTap: () {
-          final account = _accountController.text.toString();
-          final password = _passwordController.text.toString();
-          final request = LoginRequest("app.internal", account, password);
-          bloc.add(Login(request));
+          if (_formKey.currentState.validate()) {
+            final account = _accountController.text.toString();
+            final password = _passwordController.text.toString();
+            final request = LoginRequest("app.internal", account, password);
+            loginBloc.add(Login(request));
+          }
         },
       ),
     );
@@ -166,14 +172,15 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _passwordFocusNode.addListener(() {
       if (_passwordFocusNode.hasFocus) {
-        bloc.add(UpdateAnimation("cover_eyes_in"));
+        animationBloc.add(AnimationEvent.cover_eyes_in);
       } else {
-        if (animationType == "cover_eyes_in") {
-          bloc.add(UpdateAnimation("cover_eyes_out"));
+        if (animationBloc.isCoverEyesIn()) {
+          animationBloc.add(AnimationEvent.cover_eyes_out);
         }
       }
     });
-    bloc = BlocProvider.of<LoginBloc>(context);
+    loginBloc = BlocProvider.of<LoginBloc>(context);
+    animationBloc = BlocProvider.of<AnimationBloc>(context);
   }
 
   @override
@@ -184,16 +191,18 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is Success) {
             _navigateToHomeScreen();
+          } else if (state is Error) {
+            animationBloc.add(AnimationEvent.fail);
           }
         },
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
-            if (animationType == "cover_eyes_in") {
-              bloc.add(UpdateAnimation("cover_eyes_out"));
+            if (animationBloc.isCoverEyesIn()) {
+              animationBloc.add(AnimationEvent.cover_eyes_out);
             } else {
-              bloc.add(UpdateAnimation("idle"));
+              animationBloc.add(AnimationEvent.idle);
             }
           },
           child: Stack(
@@ -210,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      _buildGuss(animationType),
+                      _buildGuss(),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,

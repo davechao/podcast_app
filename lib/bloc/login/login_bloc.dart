@@ -19,14 +19,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is Login) {
       try {
+        yield Loading();
         final loginItem = await repository.login(event.request);
         yield Success(loginItem);
       } catch (error) {
         Fimber.e("Error: $error");
         yield Error();
       }
-    } else if (event is UpdateAnimation) {
-      yield UpdateAnimationResult(event.type);
     }
   }
 }

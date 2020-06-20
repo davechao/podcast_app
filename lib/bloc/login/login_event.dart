@@ -13,12 +13,3 @@ class Login extends LoginEvent {
   @override
   List<Object> get props => [request];
 }
-
-class UpdateAnimation extends LoginEvent {
-  final String type;
-
-  UpdateAnimation(this.type);
-
-  @override
-  List<Object> get props => [type];
-}

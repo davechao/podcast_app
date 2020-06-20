@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:podcastapp/bloc/animation/animation_bloc.dart';
 import 'package:podcastapp/bloc/login/login_bloc.dart';
 import 'package:podcastapp/model/config.dart';
 import 'package:podcastapp/model/config_provider.dart';
@@ -12,25 +13,22 @@ class App extends StatelessWidget {
     Config _config = ConfigProvider.of(context).config;
 
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: BlocProvider(
-          create: (context) => LoginBloc(
-            repository: AccountRepository(
-              _config.apiBaseUrl,
+      debugShowCheckedModeBanner: false,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<LoginBloc>(
+            create: (context) => LoginBloc(
+              repository: AccountRepository(
+                _config.apiBaseUrl,
+              ),
             ),
           ),
-          child: LoginPage(),
-        )
-
-//      home: BlocProvider(
-//        create: (context) => PodCastBloc(
-//          repository: PodCastRepository(
-//            client: _config.graphQLClient,
-//          ),
-//        ),
-//        child: PodCastsPage(),
-//      ),
-
-        );
+          BlocProvider<AnimationBloc>(
+            create: (context) => AnimationBloc(),
+          ),
+        ],
+        child: LoginPage(),
+      ),
+    );
   }
 }

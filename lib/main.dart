@@ -9,6 +9,8 @@ import 'package:podcastapp/model/config.dart';
 import 'package:podcastapp/model/config_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   GraphQLClient _initGraphQLClient() {
     final HttpLink _httpLink = HttpLink(
       uri: 'http://18.222.145.190:8777/graphql',
