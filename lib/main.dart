@@ -1,4 +1,6 @@
-import 'package:device_preview/device_preview.dart';
+import 'dart:io';
+
+import 'package:dio/dio.dart' as http;
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
@@ -25,11 +27,22 @@ void main() {
     );
   }
 
+  http.Dio _baseDio() {
+    http.Dio dio = http.Dio(new http.BaseOptions(
+      baseUrl: 'https://api.moshiqhwh.com/',
+      connectTimeout: 5000,
+      receiveTimeout: 100000,
+      contentType: ContentType.json.toString(),
+      responseType: http.ResponseType.json,
+    ));
+    return dio;
+  }
+
   var configProvider = ConfigProvider(
     config: Config(
       flavor: 'prod',
       graphQLClient: _initGraphQLClient(),
-      apiBaseUrl: 'https://api.moshiqhwh.com/'
+      dio: _baseDio(),
     ),
     child: App(),
   );

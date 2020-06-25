@@ -19,7 +19,7 @@ class App extends StatelessWidget {
           BlocProvider<LoginBloc>(
             create: (context) => LoginBloc(
               repository: AccountRepository(
-                _config.apiBaseUrl,
+                _config.dio,
               ),
             ),
           ),
