@@ -15,7 +15,7 @@ void main() {
 
   GraphQLClient _initGraphQLClient() {
     final HttpLink _httpLink = HttpLink(
-      uri: 'http://18.222.145.190:8777/graphql',
+      uri: 'http://18.217.90.183:8777/graphql',
       headers: {
         Constant.X_GRAPH_AUTH: Constant.X_GRAPH_AUTH_VALUE,
       },

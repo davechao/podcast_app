@@ -23,4 +23,14 @@ class PodCastRepository {
     );
     return await client.query(_options);
   }
+
+
+  Future<QueryResult> addUser(String name) async {
+    final MutationOptions _options = MutationOptions(
+      documentNode: gql("mutations.adduser"),
+      variables: <String, dynamic>{name: name},
+    );
+    return await client.mutate(_options);
+  }
+
 }
